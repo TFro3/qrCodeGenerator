@@ -223,10 +223,10 @@ class ImageProcessor {
     /**
      * Validate image file
      * @param {File} file - Image file
-     * @param {number} maxSizeBytes - Maximum file size in bytes
+     * @param {number} maxSizeBytes - Maximum file size in bytes (optional, uses file-type specific defaults)
      * @returns {Object} - Validation result
      */
-    validateImageFile(file, maxSizeBytes = 5 * 1024 * 1024) { // 5MB default
+    validateImageFile(file, maxSizeBytes = null) {
         const errors = [];
 
         if (!file) {
@@ -237,6 +237,15 @@ class ImageProcessor {
         // Check file type
         if (!file.type.startsWith('image/')) {
             errors.push('File must be an image');
+        }
+
+        // Set size limits based on file type if not explicitly provided
+        if (maxSizeBytes === null) {
+            if (file.type === 'image/gif') {
+                maxSizeBytes = 100 * 1024 * 1024; // 100MB for GIFs (animations can be large)
+            } else {
+                maxSizeBytes = 5 * 1024 * 1024; // 5MB for other images
+            }
         }
 
         // Check file size
@@ -374,8 +383,10 @@ class ImageProcessor {
 
                 const gif = new window.GIF({
                     workers: 2,
-                    quality: 10,
-                    workerScript: 'js/vendor/gif.worker.js'
+                    quality: 1, // 1 = best quality, 30 = worst (counterintuitive!)
+                    workerScript: 'js/vendor/gif.worker.js',
+                    background: '#FFFFFF',
+                    transparent: null
                 });
 
                 // Add progress listener

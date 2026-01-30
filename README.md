@@ -138,6 +138,7 @@ Create eye-catching animated QR codes for digital displays:
 - **Progress indicators** - Real-time feedback during processing
 
 **Best practices for animated QR codes:**
+- GIF files up to 100MB are supported
 - Use smaller GIFs (fewer frames and smaller dimensions) for faster processing
 - Keep animations simple - complex GIFs may take longer to process
 - Test scanning on multiple devices before deploying
@@ -250,7 +251,7 @@ Shop, Cart, Card, Location, Calendar, Payment
 ### Logo Not Appearing
 
 - Check file format (PNG, JPG, SVG, GIF supported)
-- File size must be under 5MB
+- File size must be under 5MB for images, 100MB for GIFs
 - Try a different image
 - Ensure error correction is set to High (H)
 
