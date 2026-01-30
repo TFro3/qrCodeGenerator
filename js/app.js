@@ -12,7 +12,9 @@ class QRCodeApp {
 
         this.state = {
             currentLogo: null,
-            iconManifest: null
+            iconManifest: null,
+            isAnimatedGIF: false,
+            animatedGIFBlob: null
         };
     }
 
@@ -21,6 +23,9 @@ class QRCodeApp {
      */
     async init() {
         console.log('Initializing QR Code Generator...');
+
+        // Check GIF library availability
+        this.checkGIFLibraries();
 
         // Initialize UI controller
         this.uiController.init();
@@ -32,6 +37,28 @@ class QRCodeApp {
         await this.loadPresetIcons();
 
         console.log('QR Code Generator ready!');
+    }
+
+    /**
+     * Check if GIF processing libraries are available
+     */
+    checkGIFLibraries() {
+        // Wait a bit for ES module to load
+        setTimeout(() => {
+            if (typeof window.gifuct === 'undefined') {
+                console.warn('⚠️ gifuct-js library not loaded. Animated GIF support will be disabled.');
+                console.warn('Check CDN: https://cdn.jsdelivr.net/npm/gifuct-js@2.1.2/+esm');
+            } else {
+                console.log('✓ gifuct-js library loaded successfully');
+            }
+
+            if (typeof window.GIF === 'undefined') {
+                console.warn('⚠️ gif.js library not loaded. Animated GIF support will be disabled.');
+                console.warn('Check CDN: https://unpkg.com/gif.js@0.2.0/dist/gif.js');
+            } else {
+                console.log('✓ gif.js library loaded successfully');
+            }
+        }, 100);
     }
 
     /**
@@ -52,37 +79,13 @@ class QRCodeApp {
             // Get configuration from UI
             const config = this.uiController.getConfig();
 
-            // Generate base QR code
-            const qrCanvas = this.qrGenerator.generate(config);
-
-            let finalCanvas = qrCanvas;
-
-            // Add logo overlay if logo is selected
-            if (this.state.currentLogo) {
-                try {
-                    // Use white background for logo area regardless of QR background
-                    // (helps with scannability and works with both transparent and colored backgrounds)
-                    const logoBackgroundColor = '#FFFFFF';
-
-                    finalCanvas = await this.imageProcessor.addLogoOverlay(
-                        qrCanvas,
-                        this.state.currentLogo,
-                        {
-                            logoSizePercent: 0.25,
-                            padding: 10,
-                            backgroundColor: logoBackgroundColor,
-                            patternStyle: config.style
-                        }
-                    );
-                } catch (error) {
-                    console.error('Failed to add logo overlay:', error);
-                    this.uiController.showError('Failed to add logo. Using QR code without logo.');
-                    finalCanvas = qrCanvas;
-                }
+            // Check if we're dealing with an animated GIF
+            if (this.state.isAnimatedGIF && this.state.currentLogo) {
+                await this.generateAnimatedQR(config);
+            } else {
+                // Standard static QR code generation
+                await this.generateStaticQR(config);
             }
-
-            // Display QR code
-            this.uiController.displayQR(finalCanvas);
 
         } catch (error) {
             console.error('Error generating QR code:', error);
@@ -90,6 +93,124 @@ class QRCodeApp {
         } finally {
             // Hide loading indicator
             this.uiController.hideLoading();
+        }
+    }
+
+    /**
+     * Generate static (non-animated) QR code
+     */
+    async generateStaticQR(config) {
+        // Generate base QR code
+        const qrCanvas = this.qrGenerator.generate(config);
+
+        let finalCanvas = qrCanvas;
+
+        // Add logo overlay if logo is selected
+        if (this.state.currentLogo) {
+            try {
+                // Use white background for logo area regardless of QR background
+                // (helps with scannability and works with both transparent and colored backgrounds)
+                const logoBackgroundColor = '#FFFFFF';
+
+                finalCanvas = await this.imageProcessor.addLogoOverlay(
+                    qrCanvas,
+                    this.state.currentLogo,
+                    {
+                        logoSizePercent: 0.25,
+                        padding: 10,
+                        backgroundColor: logoBackgroundColor,
+                        patternStyle: config.style
+                    }
+                );
+            } catch (error) {
+                console.error('Failed to add logo overlay:', error);
+                this.uiController.showError('Failed to add logo. Using QR code without logo.');
+                finalCanvas = qrCanvas;
+            }
+        }
+
+        // Display QR code
+        this.uiController.displayQR(finalCanvas);
+        this.state.animatedGIFBlob = null;
+    }
+
+    /**
+     * Generate animated QR code with GIF logo
+     */
+    async generateAnimatedQR(config) {
+        try {
+            // Check if GIF libraries are available
+            if (!window.gifuct || !window.GIF) {
+                throw new Error('GIF processing libraries not loaded. Please check your internet connection and refresh the page.');
+            }
+
+            this.uiController.showLoadingMessage('Processing animated GIF...');
+
+            // Parse GIF frames
+            const frames = await this.imageProcessor.parseGIF(this.state.currentLogo);
+            console.log(`Processing ${frames.length} GIF frames...`);
+
+            const qrCanvases = [];
+            const delays = [];
+
+            // Use white background for logo area
+            const logoBackgroundColor = '#FFFFFF';
+
+            // Generate QR code for each frame
+            for (let i = 0; i < frames.length; i++) {
+                this.uiController.showLoadingMessage(`Processing frame ${i + 1}/${frames.length}...`);
+
+                // Generate base QR code (same for all frames)
+                const qrCanvas = this.qrGenerator.generate(config);
+
+                // Convert frame ImageData to canvas
+                const frameCanvas = this.imageProcessor.imageDataToCanvas(frames[i].imageData);
+                const frameDataURL = frameCanvas.toDataURL();
+
+                // Add logo overlay for this frame
+                const finalCanvas = await this.imageProcessor.addLogoOverlay(
+                    qrCanvas,
+                    frameDataURL,
+                    {
+                        logoSizePercent: 0.25,
+                        padding: 10,
+                        backgroundColor: logoBackgroundColor,
+                        patternStyle: config.style
+                    }
+                );
+
+                qrCanvases.push(finalCanvas);
+                delays.push(frames[i].delay);
+            }
+
+            // Create animated GIF from QR frames
+            this.uiController.showLoadingMessage('Creating animated GIF...');
+
+            const gifBlob = await this.imageProcessor.createAnimatedGIF(
+                qrCanvases,
+                delays,
+                (progress) => {
+                    this.uiController.showLoadingMessage(`Encoding GIF: ${Math.round(progress * 100)}%`);
+                }
+            );
+
+            // Convert blob to data URL for display
+            const gifDataURL = await this.imageProcessor.blobToDataURL(gifBlob);
+
+            // Store blob for download
+            this.state.animatedGIFBlob = gifBlob;
+
+            // Display animated GIF
+            this.uiController.displayAnimatedGIF(gifDataURL);
+
+            console.log('Animated QR code generated successfully');
+
+        } catch (error) {
+            console.error('Failed to generate animated QR code:', error);
+            console.error('Error details:', error.message, error.stack);
+            this.uiController.showError(`Failed to process animated GIF: ${error.message}. Using static QR code.`);
+            // Fallback to static QR
+            await this.generateStaticQR(config);
         }
     }
 
@@ -109,14 +230,27 @@ class QRCodeApp {
             // Convert to data URL
             const dataURL = await this.imageProcessor.fileToDataURL(file);
 
-            // Resize if too large (optional)
-            const resizedDataURL = await this.imageProcessor.resizeImage(dataURL, 512, 512);
+            // Check if it's a GIF
+            const isGIF = file.type === 'image/gif';
 
-            // Set as current logo
-            this.state.currentLogo = resizedDataURL;
+            if (isGIF) {
+                // Store GIF as-is for animated processing
+                this.state.currentLogo = dataURL;
+                this.state.isAnimatedGIF = true;
 
-            // Show preview
-            this.uiController.showLogoPreview(resizedDataURL);
+                // Show preview (first frame)
+                this.uiController.showLogoPreview(dataURL);
+            } else {
+                // Resize non-GIF images
+                const resizedDataURL = await this.imageProcessor.resizeImage(dataURL, 512, 512);
+
+                // Set as current logo
+                this.state.currentLogo = resizedDataURL;
+                this.state.isAnimatedGIF = false;
+
+                // Show preview
+                this.uiController.showLogoPreview(resizedDataURL);
+            }
 
             // Close icon picker if open
             if (this.uiController.state.iconPickerOpen) {
@@ -165,6 +299,8 @@ class QRCodeApp {
      */
     async removeLogo() {
         this.state.currentLogo = null;
+        this.state.isAnimatedGIF = false;
+        this.state.animatedGIFBlob = null;
         this.uiController.hideLogoPreview();
 
         // Clear file input
@@ -190,7 +326,7 @@ class QRCodeApp {
     downloadQR() {
         const canvas = this.uiController.state.currentCanvas;
 
-        if (!canvas) {
+        if (!canvas && !this.state.animatedGIFBlob) {
             this.uiController.showError('No QR code to download. Generate one first.');
             return;
         }
@@ -199,8 +335,15 @@ class QRCodeApp {
             const config = this.uiController.getConfig();
             const filename = this.downloadHandler.generateFilename(config.text);
 
-            this.downloadHandler.downloadPNG(canvas, filename);
-            this.uiController.showSuccess('QR code downloaded successfully!');
+            // Download animated GIF if available
+            if (this.state.animatedGIFBlob) {
+                this.downloadHandler.downloadGIF(this.state.animatedGIFBlob, filename);
+                this.uiController.showSuccess('Animated QR code downloaded successfully!');
+            } else {
+                // Download static PNG
+                this.downloadHandler.downloadPNG(canvas, filename);
+                this.uiController.showSuccess('QR code downloaded successfully!');
+            }
 
         } catch (error) {
             console.error('Error downloading QR code:', error);

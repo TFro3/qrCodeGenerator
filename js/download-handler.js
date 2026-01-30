@@ -79,6 +79,20 @@ class DownloadHandler {
     }
 
     /**
+     * Download GIF blob
+     * @param {Blob} gifBlob - GIF blob to download
+     * @param {string} filename - Filename (without extension)
+     */
+    downloadGIF(gifBlob, filename = this.defaultFilename) {
+        if (!gifBlob) {
+            console.error('No GIF blob provided for download');
+            return;
+        }
+
+        this.downloadBlob(gifBlob, `${filename}.gif`);
+    }
+
+    /**
      * Download a blob as a file
      * @param {Blob} blob - Blob to download
      * @param {string} filename - Full filename with extension

@@ -197,6 +197,14 @@
         }
     </script>
 
+    <!-- GIF Support Libraries -->
+    <script type="module">
+        // Import gifuct-js as ES module and expose to window
+        import * as gifuct from 'https://cdn.jsdelivr.net/npm/gifuct-js@2.1.2/+esm';
+        window.gifuct = gifuct;
+    </script>
+    <script src="https://unpkg.com/gif.js@0.2.0/dist/gif.js"></script>
+
     <!-- Application Scripts -->
     <script src="js/qr-generator.js"></script>
     <script src="js/image-processor.js"></script>

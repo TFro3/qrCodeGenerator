@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(open \"index.html\")",
-      "Bash(open \"http://localhost:8000\")"
+      "Bash(open \"http://localhost:8000\")",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)"
     ]
   }
 }

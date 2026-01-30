@@ -8,6 +8,7 @@ A free, self-hosted QR code generator that creates QR codes that **never expire*
 - **No Expiration** - QR codes work forever (as long as the linked URL is active)
 - **Multiple Pattern Styles** - Choose between squares or rounded patterns
 - **Custom Logos** - Add your own logo or choose from 18 preset icons
+- **Animated GIF Support** - Upload animated GIFs to create eye-catching animated QR codes
 - **Flexible Sizing** - Generate QR codes from 256px to 2048px
 - **Error Correction Levels** - Choose from Low, Medium, Quartile, or High
 - **Custom Colors** - Customize foreground and background colors, or use transparent backgrounds
@@ -125,6 +126,24 @@ For best scanning results when using logos:
 - **Use high contrast** - Logo should stand out clearly
 - **Test scanning** - Always test with your phone before printing
 
+## Animated GIF Support
+
+Create eye-catching animated QR codes for digital displays:
+
+- **Upload animated GIFs** - Upload any GIF file as your logo to create an animated QR code
+- **Frame-by-frame processing** - Each frame of your GIF is applied to the QR code
+- **Automatic encoding** - The app processes all frames and combines them back into an animated GIF
+- **Perfect for digital use** - Ideal for websites, digital displays, presentations, and social media
+- **Same scannability** - Animated QR codes scan just as well as static ones
+- **Progress indicators** - Real-time feedback during processing
+
+**Best practices for animated QR codes:**
+- Use smaller GIFs (fewer frames and smaller dimensions) for faster processing
+- Keep animations simple - complex GIFs may take longer to process
+- Test scanning on multiple devices before deploying
+- Best suited for digital displays (screens) rather than printed materials
+- Downloaded as animated GIF files ready to use
+
 ## Transparent Background
 
 Enable transparent backgrounds for maximum flexibility:
@@ -147,8 +166,10 @@ Enable transparent backgrounds for maximum flexibility:
 ## Technical Details
 
 ### Stack
-- Pure HTML5, CSS3, JavaScript (ES6)
+- Pure HTML5, CSS3, JavaScript (ES6 with ES modules)
 - [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) library
+- [gifuct-js](https://github.com/matt-way/gifuct-js) for GIF parsing (via jsDelivr ESM)
+- [gif.js](https://github.com/jnordberg/gif.js) for GIF encoding
 - Native Canvas API for rendering
 - No build tools required
 
@@ -164,9 +185,11 @@ qr-code-generator/
 ├── js/
 │   ├── app.js             # Main application
 │   ├── qr-generator.js    # QR generation logic
-│   ├── image-processor.js # Logo overlay
+│   ├── image-processor.js # Logo overlay & GIF processing
 │   ├── ui-controller.js   # UI interactions
-│   └── download-handler.js # Download functionality
+│   ├── download-handler.js # Download functionality
+│   └── vendor/
+│       └── gif.worker.js  # GIF encoding worker (local)
 ├── assets/
 │   ├── icons/             # Preset icon library
 │   └── icons-manifest.json
@@ -226,10 +249,18 @@ Shop, Cart, Card, Location, Calendar, Payment
 
 ### Logo Not Appearing
 
-- Check file format (PNG, JPG, SVG supported)
+- Check file format (PNG, JPG, SVG, GIF supported)
 - File size must be under 5MB
 - Try a different image
 - Ensure error correction is set to High (H)
+
+### Animated GIF Processing Slowly
+
+- Reduce GIF file size (dimensions and frame count)
+- Large GIFs with many frames take longer to process
+- Progress percentage is shown during encoding
+- Consider using simpler animations with fewer frames
+- Processing time varies based on device performance
 
 ### Preset Icons Not Available (Button Disabled)
 
@@ -273,6 +304,8 @@ Free to use for personal and commercial projects.
 ## Credits
 
 - QR Code Library: [qrcode-generator by kazuhikoarase](https://github.com/kazuhikoarase/qrcode-generator)
+- GIF Parsing: [gifuct-js by matt-way](https://github.com/matt-way/gifuct-js)
+- GIF Encoding: [gif.js by jnordberg](https://github.com/jnordberg/gif.js)
 - Icons: Custom SVG icons and brand logos
 
 ## Support

@@ -32,15 +32,14 @@ class ImageProcessor {
             throw new Error('QR canvas and logo source are required');
         }
 
-        // Set canvas to same size as QR code
-        this.canvas.width = qrCanvas.width;
-        this.canvas.height = qrCanvas.height;
-
-        // Clear canvas
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Create a new canvas for this frame (important for animated GIFs)
+        const outputCanvas = document.createElement('canvas');
+        outputCanvas.width = qrCanvas.width;
+        outputCanvas.height = qrCanvas.height;
+        const outputCtx = outputCanvas.getContext('2d');
 
         // Draw original QR code
-        this.ctx.drawImage(qrCanvas, 0, 0);
+        outputCtx.drawImage(qrCanvas, 0, 0);
 
         // Load logo image
         const logoImage = await this.loadImage(logoSrc);
@@ -52,12 +51,12 @@ class ImageProcessor {
 
         // Draw background for logo (improves scannability)
         // Use rounded shape for dots pattern for better blending
-        this.drawLogoBackground(logoX, logoY, logoSize, padding, backgroundColor, patternStyle);
+        this.drawLogoBackground(logoX, logoY, logoSize, padding, backgroundColor, patternStyle, outputCtx);
 
         // Draw logo with aspect ratio preservation
-        await this.drawLogo(logoImage, logoX, logoY, logoSize);
+        this.drawLogo(logoImage, logoX, logoY, logoSize, outputCtx);
 
-        return this.canvas;
+        return outputCanvas;
     }
 
     /**
@@ -68,9 +67,11 @@ class ImageProcessor {
      * @param {number} padding - Padding around logo
      * @param {string} backgroundColor - Background color
      * @param {string} patternStyle - QR pattern style
+     * @param {CanvasRenderingContext2D} ctx - Canvas context (optional, defaults to this.ctx)
      */
-    drawLogoBackground(x, y, size, padding, backgroundColor, patternStyle) {
-        this.ctx.fillStyle = backgroundColor;
+    drawLogoBackground(x, y, size, padding, backgroundColor, patternStyle, ctx = null) {
+        const context = ctx || this.ctx;
+        context.fillStyle = backgroundColor;
 
         // For dots pattern, use circular background for better blending
         // For other patterns, use rounded rectangle
@@ -79,27 +80,27 @@ class ImageProcessor {
             const centerY = y + size / 2;
             const radius = (size + padding * 2) / 2;
 
-            this.ctx.beginPath();
-            this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            this.ctx.fill();
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            context.fill();
         } else if (patternStyle === 'rounded') {
             // Rounded rectangle with more radius
             const borderRadius = (size + padding * 2) * 0.2;
-            this.ctx.beginPath();
-            this.ctx.moveTo(x - padding + borderRadius, y - padding);
-            this.ctx.lineTo(x + size + padding - borderRadius, y - padding);
-            this.ctx.arcTo(x + size + padding, y - padding, x + size + padding, y - padding + borderRadius, borderRadius);
-            this.ctx.lineTo(x + size + padding, y + size + padding - borderRadius);
-            this.ctx.arcTo(x + size + padding, y + size + padding, x + size + padding - borderRadius, y + size + padding, borderRadius);
-            this.ctx.lineTo(x - padding + borderRadius, y + size + padding);
-            this.ctx.arcTo(x - padding, y + size + padding, x - padding, y + size + padding - borderRadius, borderRadius);
-            this.ctx.lineTo(x - padding, y - padding + borderRadius);
-            this.ctx.arcTo(x - padding, y - padding, x - padding + borderRadius, y - padding, borderRadius);
-            this.ctx.closePath();
-            this.ctx.fill();
+            context.beginPath();
+            context.moveTo(x - padding + borderRadius, y - padding);
+            context.lineTo(x + size + padding - borderRadius, y - padding);
+            context.arcTo(x + size + padding, y - padding, x + size + padding, y - padding + borderRadius, borderRadius);
+            context.lineTo(x + size + padding, y + size + padding - borderRadius);
+            context.arcTo(x + size + padding, y + size + padding, x + size + padding - borderRadius, y + size + padding, borderRadius);
+            context.lineTo(x - padding + borderRadius, y + size + padding);
+            context.arcTo(x - padding, y + size + padding, x - padding, y + size + padding - borderRadius, borderRadius);
+            context.lineTo(x - padding, y - padding + borderRadius);
+            context.arcTo(x - padding, y - padding, x - padding + borderRadius, y - padding, borderRadius);
+            context.closePath();
+            context.fill();
         } else {
             // Standard rectangle for squares pattern
-            this.ctx.fillRect(
+            context.fillRect(
                 x - padding,
                 y - padding,
                 size + (padding * 2),
@@ -114,8 +115,10 @@ class ImageProcessor {
      * @param {number} x - X position
      * @param {number} y - Y position
      * @param {number} maxSize - Maximum size for logo
+     * @param {CanvasRenderingContext2D} ctx - Canvas context (optional, defaults to this.ctx)
      */
-    drawLogo(image, x, y, maxSize) {
+    drawLogo(image, x, y, maxSize, ctx = null) {
+        const context = ctx || this.ctx;
         const aspectRatio = image.width / image.height;
         let width = maxSize;
         let height = maxSize;
@@ -133,7 +136,7 @@ class ImageProcessor {
         const offsetX = (maxSize - width) / 2;
         const offsetY = (maxSize - height) / 2;
 
-        this.ctx.drawImage(
+        context.drawImage(
             image,
             x + offsetX,
             y + offsetY,
@@ -243,9 +246,9 @@ class ImageProcessor {
         }
 
         // Check supported formats
-        const supportedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp'];
+        const supportedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp', 'image/gif'];
         if (!supportedFormats.includes(file.type)) {
-            errors.push('Unsupported image format. Use PNG, JPEG, SVG, or WebP');
+            errors.push('Unsupported image format. Use PNG, JPEG, SVG, WebP, or GIF');
         }
 
         return {
@@ -260,5 +263,170 @@ class ImageProcessor {
      */
     getCanvas() {
         return this.canvas;
+    }
+
+    /**
+     * Check if image source is an animated GIF
+     * @param {string} src - Image source (data URL or URL)
+     * @returns {boolean} - True if GIF
+     */
+    isGIF(src) {
+        return src.startsWith('data:image/gif') || src.toLowerCase().endsWith('.gif');
+    }
+
+    /**
+     * Parse GIF file and extract frames
+     * @param {string} dataURL - GIF data URL
+     * @returns {Promise<Array>} - Array of frame objects with {imageData, delay}
+     */
+    async parseGIF(dataURL) {
+        try {
+            // Check if gifuct is available
+            if (!window.gifuct) {
+                throw new Error('gifuct-js library not loaded');
+            }
+
+            // Convert data URL to array buffer
+            const base64 = dataURL.split(',')[1];
+            if (!base64) {
+                throw new Error('Invalid data URL format');
+            }
+
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+
+            console.log(`Parsing GIF: ${bytes.length} bytes`);
+
+            // Parse GIF using gifuct-js
+            const gif = window.gifuct.parseGIF(bytes.buffer);
+            const frames = window.gifuct.decompressFrames(gif, true);
+
+            console.log(`GIF parsed: ${frames.length} frames found`);
+
+            if (!frames || frames.length === 0) {
+                throw new Error('No frames found in GIF');
+            }
+
+            // Convert frames to ImageData and extract delays
+            const processedFrames = [];
+            for (const frame of frames) {
+                // Create ImageData from frame patch
+                const imageData = new ImageData(
+                    new Uint8ClampedArray(frame.patch),
+                    frame.dims.width,
+                    frame.dims.height
+                );
+
+                processedFrames.push({
+                    imageData: imageData,
+                    delay: frame.delay || 100, // Default 100ms if no delay
+                    dims: frame.dims
+                });
+            }
+
+            return processedFrames;
+        } catch (error) {
+            console.error('Failed to parse GIF:', error);
+            console.error('Error details:', error.message);
+            throw new Error(`Failed to parse GIF file: ${error.message}`);
+        }
+    }
+
+    /**
+     * Create canvas from ImageData
+     * @param {ImageData} imageData - Image data
+     * @returns {HTMLCanvasElement} - Canvas with image
+     */
+    imageDataToCanvas(imageData) {
+        const canvas = document.createElement('canvas');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imageData, 0, 0);
+        return canvas;
+    }
+
+    /**
+     * Create animated GIF from array of canvases
+     * @param {Array<HTMLCanvasElement>} canvases - Array of canvas elements
+     * @param {Array<number>} delays - Array of frame delays in ms
+     * @param {Function} progressCallback - Optional progress callback
+     * @returns {Promise<Blob>} - GIF blob
+     */
+    async createAnimatedGIF(canvases, delays, progressCallback = null) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Check if GIF library is available
+                if (!window.GIF) {
+                    reject(new Error('gif.js library not loaded'));
+                    return;
+                }
+
+                if (!canvases || canvases.length === 0) {
+                    reject(new Error('No canvases provided for GIF creation'));
+                    return;
+                }
+
+                console.log(`Creating animated GIF from ${canvases.length} frames`);
+
+                const gif = new window.GIF({
+                    workers: 2,
+                    quality: 10,
+                    workerScript: 'js/vendor/gif.worker.js'
+                });
+
+                // Add progress listener
+                if (progressCallback) {
+                    gif.on('progress', (progress) => {
+                        progressCallback(progress);
+                    });
+                }
+
+                // Add frames to GIF
+                canvases.forEach((canvas, index) => {
+                    gif.addFrame(canvas, {
+                        delay: delays[index] || 100,
+                        copy: true
+                    });
+                    console.log(`Added frame ${index + 1}/${canvases.length} with delay ${delays[index]}cs`);
+                });
+
+                // Handle completion
+                gif.on('finished', (blob) => {
+                    console.log('GIF encoding completed successfully');
+                    console.log(`GIF blob size: ${blob.size} bytes, type: ${blob.type}`);
+                    resolve(blob);
+                });
+
+                // Handle errors
+                gif.on('error', (error) => {
+                    console.error('GIF encoding error:', error);
+                    reject(new Error(`GIF encoding failed: ${error}`));
+                });
+
+                // Start rendering
+                gif.render();
+            } catch (error) {
+                console.error('Failed to create animated GIF:', error);
+                reject(new Error(`Failed to create animated GIF: ${error.message}`));
+            }
+        });
+    }
+
+    /**
+     * Convert GIF blob to data URL
+     * @param {Blob} blob - GIF blob
+     * @returns {Promise<string>} - Data URL
+     */
+    async blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => resolve(event.target.result);
+            reader.onerror = (error) => reject(new Error(`Failed to convert blob: ${error}`));
+            reader.readAsDataURL(blob);
+        });
     }
 }

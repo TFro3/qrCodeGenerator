@@ -193,6 +193,12 @@ class UIController {
 
         this.state.currentCanvas = canvas;
 
+        // Remove any existing animated GIF img element
+        const existingGIF = this.elements.canvasContainer.querySelector('.animated-qr-gif');
+        if (existingGIF) {
+            existingGIF.remove();
+        }
+
         // Hide placeholder, show canvas
         this.elements.placeholder.classList.add('hidden');
         this.elements.canvas.classList.remove('hidden');
@@ -203,6 +209,39 @@ class UIController {
         this.elements.canvas.height = canvas.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(canvas, 0, 0);
+
+        // Enable download button
+        this.elements.downloadBtn.disabled = false;
+    }
+
+    /**
+     * Display animated GIF QR code
+     * @param {string} gifDataURL - GIF data URL
+     */
+    displayAnimatedGIF(gifDataURL) {
+        if (!gifDataURL) return;
+
+        // Remove any existing animated GIF
+        const existingGIF = this.elements.canvasContainer.querySelector('.animated-qr-gif');
+        if (existingGIF) {
+            existingGIF.remove();
+        }
+
+        // Hide placeholder and canvas
+        this.elements.placeholder.classList.add('hidden');
+        this.elements.canvas.classList.add('hidden');
+
+        // Create img element for animated GIF
+        const gifImg = document.createElement('img');
+        gifImg.src = gifDataURL;
+        gifImg.className = 'animated-qr-gif qr-canvas';
+        gifImg.alt = 'Animated QR Code';
+
+        // Insert before placeholder (or after canvas)
+        this.elements.canvasContainer.insertBefore(gifImg, this.elements.placeholder);
+
+        // Set state
+        this.state.currentCanvas = gifImg; // Store reference for download check
 
         // Enable download button
         this.elements.downloadBtn.disabled = false;
@@ -222,6 +261,19 @@ class UIController {
     hideLoading() {
         this.elements.loadingIndicator.classList.add('hidden');
         this.elements.generateBtn.disabled = false;
+    }
+
+    /**
+     * Show loading indicator with custom message
+     * @param {string} message - Loading message
+     */
+    showLoadingMessage(message) {
+        this.elements.loadingIndicator.classList.remove('hidden');
+        const loadingText = this.elements.loadingIndicator.querySelector('p');
+        if (loadingText) {
+            loadingText.textContent = message;
+        }
+        this.elements.generateBtn.disabled = true;
     }
 
     /**
