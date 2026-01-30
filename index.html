@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free QR Code Generator - Create QR codes that never expire">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title">QR Code Generator</h1>
+            <p class="header__subtitle">Create QR codes that last forever</p>
+        </div>
+    </header>
+
+    <main class="main container">
+        <div class="controls-panel">
+            <section class="control-section">
+                <label for="qr-input" class="control-label">URL or Text</label>
+                <input
+                    type="text"
+                    id="qr-input"
+                    class="text-input"
+                    placeholder="https://example.com"
+                    aria-label="Enter URL or text to encode"
+                >
+            </section>
+
+            <section class="control-section">
+                <label class="control-label">Pattern Style</label>
+                <div class="style-options">
+                    <button
+                        class="style-btn active"
+                        data-style="squares"
+                        aria-label="Squares pattern"
+                    >
+                        <span class="style-preview style-preview--squares"></span>
+                        Squares
+                    </button>
+                    <button
+                        class="style-btn"
+                        data-style="rounded"
+                        aria-label="Rounded pattern"
+                    >
+                        <span class="style-preview style-preview--rounded"></span>
+                        Rounded
+                    </button>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <label for="qr-size" class="control-label">Size</label>
+                <select id="qr-size" class="select-input" aria-label="Select QR code size">
+                    <option value="256">256 × 256 px</option>
+                    <option value="512" selected>512 × 512 px</option>
+                    <option value="1024">1024 × 1024 px</option>
+                    <option value="2048">2048 × 2048 px</option>
+                </select>
+            </section>
+
+            <section class="control-section">
+                <label for="error-correction" class="control-label">Error Correction</label>
+                <select id="error-correction" class="select-input" aria-label="Select error correction level">
+                    <option value="L">Low (7%)</option>
+                    <option value="M">Medium (15%)</option>
+                    <option value="Q">Quartile (25%)</option>
+                    <option value="H" selected>High (30%) - For logos</option>
+                </select>
+            </section>
+
+            <section class="control-section">
+                <label class="control-label">Logo / Icon</label>
+                <div class="logo-controls">
+                    <button id="upload-logo-btn" class="secondary-btn" aria-label="Upload custom logo">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                        Upload Custom
+                    </button>
+                    <button id="preset-icons-btn" class="secondary-btn" aria-label="Choose preset icon">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        Choose Preset
+                    </button>
+                    <input
+                        type="file"
+                        id="logo-upload"
+                        accept="image/*"
+                        hidden
+                        aria-label="Upload logo file"
+                    >
+                </div>
+                <div id="logo-preview" class="logo-preview hidden">
+                    <img id="logo-preview-img" src="" alt="Selected logo">
+                    <button id="remove-logo-btn" class="remove-logo-btn" aria-label="Remove logo">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="icon-picker" class="icon-picker hidden">
+                    <!-- Icon grid will be populated by JavaScript -->
+                </div>
+                <div id="preset-icons-notice" class="helper-text hidden">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>Preset icons require a web server. Use "Upload Custom" or review documentation to setup a proper server configuration</span>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <label class="control-label">Colors</label>
+                <div class="color-controls">
+                    <div class="color-input-group">
+                        <label for="fg-color" class="color-label">Foreground</label>
+                        <input
+                            type="color"
+                            id="fg-color"
+                            class="color-input"
+                            value="#000000"
+                            aria-label="Foreground color"
+                        >
+                    </div>
+                    <div class="color-input-group">
+                        <label for="bg-color" class="color-label">Background</label>
+                        <input
+                            type="color"
+                            id="bg-color"
+                            class="color-input"
+                            value="#ffffff"
+                            aria-label="Background color"
+                        >
+                    </div>
+                </div>
+                <div class="checkbox-control">
+                    <label class="checkbox-label">
+                        <input
+                            type="checkbox"
+                            id="transparent-bg"
+                            class="checkbox-input"
+                            aria-label="Transparent background"
+                        >
+                        <span>Transparent Background</span>
+                    </label>
+                </div>
+            </section>
+
+            <button id="generate-btn" class="primary-btn" aria-label="Generate QR code">
+                Generate QR Code
+            </button>
+        </div>
+
+        <div class="preview-panel">
+            <div class="canvas-container">
+                <canvas id="qr-canvas" class="qr-canvas hidden" aria-label="QR code preview"></canvas>
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>Generating QR code...</p>
+                </div>
+                <div id="placeholder" class="placeholder">
+                    <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
+                        <path d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z"/>
+                    </svg>
+                    <p>Enter a URL to generate your QR code</p>
+                </div>
+            </div>
+            <button id="download-btn" class="download-btn" disabled aria-label="Download QR code">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download QR Code
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Free & Open Source - Your QR codes, your privacy, forever.</p>
+        </div>
+    </footer>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script>
+        // Fallback to local copy if CDN fails
+        if (typeof qrcode === 'undefined') {
+            document.write('<script src="js/qrcode-generator.js"><\/script>');
+        }
+    </script>
+
+    <!-- Application Scripts -->
+    <script src="js/qr-generator.js"></script>
+    <script src="js/image-processor.js"></script>
+    <script src="js/ui-controller.js"></script>
+    <script src="js/download-handler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

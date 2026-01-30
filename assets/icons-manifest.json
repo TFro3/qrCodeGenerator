@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "categories": [
+    {
+      "id": "social",
+      "name": "Social Media",
+      "icons": [
+        {
+          "id": "facebook",
+          "name": "Facebook",
+          "file": "social/facebook.svg",
+          "keywords": ["social", "meta", "fb"]
+        },
+        {
+          "id": "instagram",
+          "name": "Instagram",
+          "file": "social/instagram.svg",
+          "keywords": ["social", "meta", "ig"]
+        },
+        {
+          "id": "twitter",
+          "name": "Twitter / X",
+          "file": "social/twitter.svg",
+          "keywords": ["social", "x", "tweet"]
+        },
+        {
+          "id": "linkedin",
+          "name": "LinkedIn",
+          "file": "social/linkedin.svg",
+          "keywords": ["social", "professional", "network"]
+        },
+        {
+          "id": "youtube",
+          "name": "YouTube",
+          "file": "social/youtube.svg",
+          "keywords": ["social", "video", "google"]
+        },
+        {
+          "id": "tiktok",
+          "name": "TikTok",
+          "file": "social/tiktok.svg",
+          "keywords": ["social", "video"]
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "name": "Technology",
+      "icons": [
+        {
+          "id": "github",
+          "name": "GitHub",
+          "file": "tech/github.svg",
+          "keywords": ["tech", "code", "git"]
+        },
+        {
+          "id": "website",
+          "name": "Website",
+          "file": "tech/website.svg",
+          "keywords": ["tech", "web", "globe", "internet"]
+        },
+        {
+          "id": "email",
+          "name": "Email",
+          "file": "tech/email.svg",
+          "keywords": ["tech", "mail", "contact"]
+        },
+        {
+          "id": "phone",
+          "name": "Phone",
+          "file": "tech/phone.svg",
+          "keywords": ["tech", "call", "contact"]
+        },
+        {
+          "id": "wifi",
+          "name": "WiFi",
+          "file": "tech/wifi.svg",
+          "keywords": ["tech", "network", "wireless"]
+        },
+        {
+          "id": "link",
+          "name": "Link",
+          "file": "tech/link.svg",
+          "keywords": ["tech", "url", "chain"]
+        }
+      ]
+    },
+    {
+      "id": "business",
+      "name": "Business",
+      "icons": [
+        {
+          "id": "shop",
+          "name": "Shop",
+          "file": "business/shop.svg",
+          "keywords": ["business", "store", "retail"]
+        },
+        {
+          "id": "cart",
+          "name": "Shopping Cart",
+          "file": "business/cart.svg",
+          "keywords": ["business", "shopping", "ecommerce"]
+        },
+        {
+          "id": "card",
+          "name": "Business Card",
+          "file": "business/card.svg",
+          "keywords": ["business", "contact", "vcard"]
+        },
+        {
+          "id": "location",
+          "name": "Location",
+          "file": "business/location.svg",
+          "keywords": ["business", "map", "pin", "address"]
+        },
+        {
+          "id": "calendar",
+          "name": "Calendar",
+          "file": "business/calendar.svg",
+          "keywords": ["business", "event", "schedule"]
+        },
+        {
+          "id": "payment",
+          "name": "Payment",
+          "file": "business/payment.svg",
+          "keywords": ["business", "money", "credit card"]
+        }
+      ]
+    }
+  ]
+}

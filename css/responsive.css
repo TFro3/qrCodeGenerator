@@ -1,0 +1,238 @@
+/* ==========================================
+   Responsive Design
+   ========================================== */
+
+/* Tablet Landscape (1024px - 1279px) */
+@media (max-width: 1279px) {
+    .main {
+        grid-template-columns: 380px 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    .canvas-container {
+        max-width: 500px;
+    }
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (max-width: 1023px) {
+    .main {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2xl);
+    }
+
+    .controls-panel {
+        order: 1;
+    }
+
+    .preview-panel {
+        order: 2;
+    }
+
+    .canvas-container {
+        max-width: 100%;
+    }
+}
+
+/* Mobile Landscape (640px - 767px) */
+@media (max-width: 767px) {
+    .header {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .header__title {
+        font-size: 1.5rem;
+    }
+
+    .header__subtitle {
+        font-size: 0.875rem;
+    }
+
+    .main {
+        padding-top: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+
+    .canvas-container {
+        padding: var(--spacing-lg);
+        min-height: 300px;
+    }
+
+    .download-btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* Make color controls stack on smaller screens */
+    .color-controls {
+        grid-template-columns: 1fr;
+    }
+
+    /* Adjust icon grid for mobile */
+    .icon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    }
+}
+
+/* Mobile Portrait (< 640px) */
+@media (max-width: 639px) {
+    .header__title {
+        font-size: 1.25rem;
+    }
+
+    .style-options {
+        grid-template-columns: 1fr;
+    }
+
+    .style-btn {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .style-preview {
+        width: 24px;
+        height: 24px;
+    }
+
+    .style-preview--squares::before,
+    .style-preview--dots::before,
+    .style-preview--rounded::before {
+        width: 14px;
+        height: 14px;
+    }
+
+    .logo-controls {
+        flex-direction: column;
+    }
+
+    .secondary-btn {
+        width: 100%;
+    }
+
+    /* Smaller text on very small screens */
+    body {
+        font-size: 14px;
+    }
+
+    .primary-btn,
+    .download-btn {
+        font-size: 0.875rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Increase touch target sizes */
+    .style-btn,
+    .secondary-btn,
+    .icon-item {
+        min-height: 44px;
+    }
+
+    .primary-btn,
+    .download-btn {
+        min-height: 48px;
+    }
+
+    .text-input,
+    .select-input {
+        min-height: 44px;
+    }
+
+    .color-input {
+        min-height: 52px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .download-btn:hover,
+    .style-btn:hover,
+    .icon-item:hover {
+        transform: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .header,
+    .footer,
+    .controls-panel {
+        display: none;
+    }
+
+    .main {
+        display: block;
+    }
+
+    .preview-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        page-break-inside: avoid;
+    }
+
+    .canvas-container {
+        box-shadow: none;
+        border: none;
+    }
+
+    .download-btn {
+        display: none;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+        --text-tertiary: #4B5563;
+    }
+
+    .text-input,
+    .select-input {
+        border-width: 3px;
+    }
+
+    .style-btn,
+    .secondary-btn {
+        border-width: 3px;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .spinner {
+        animation: none;
+        border-top-color: var(--primary);
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    /* Uncomment and customize if you want automatic dark mode support
+    :root {
+        --bg-gray: #111827;
+        --bg-white: #1F2937;
+        --card-bg: #1F2937;
+        --text-primary: #F9FAFB;
+        --text-secondary: #D1D5DB;
+        --text-tertiary: #9CA3AF;
+        --border-color: #374151;
+        --border-hover: #4B5563;
+    }
+    */
+}
