@@ -1,6 +1,6 @@
 /**
- * QR Code Generator Module
- * Handles QR code generation with different pattern styles
+ * QR Generator Module
+ * Handles QR generation with different pattern styles
  */
 
 class QRGenerator {
@@ -10,17 +10,17 @@ class QRGenerator {
     }
 
     /**
-     * Generate QR code with specified options
+     * Generate QR with specified options
      * @param {Object} options - QR generation options
      * @param {string} options.text - Text to encode
      * @param {number} options.size - Canvas size in pixels
      * @param {string} options.errorCorrection - Error correction level (L, M, Q, H)
      * @param {string} options.style - Pattern style (squares, dots, rounded)
-     * @param {string} options.foregroundColor - QR code color
+     * @param {string} options.foregroundColor - QR color
      * @param {string} options.backgroundColor - Background color
      * @param {boolean} options.transparentBackground - Use transparent background
      * @param {number} options.margin - Quiet zone modules
-     * @returns {HTMLCanvasElement} - Canvas with QR code
+     * @returns {HTMLCanvasElement} - Canvas with QR
      */
     generate(options) {
         const {
@@ -35,18 +35,18 @@ class QRGenerator {
         } = options;
 
         if (!text) {
-            throw new Error('Text is required to generate QR code');
+            throw new Error('Text is required to generate QR');
         }
 
         // Calculate appropriate type number based on text length
         const typeNumber = this.calculateTypeNumber(text, errorCorrection);
 
-        // Create QR code using qrcode-generator library
+        // Create QR using qrcode-generator library
         const qr = qrcode(typeNumber, errorCorrection);
         qr.addData(text);
         qr.make();
 
-        // Render QR code to canvas with selected style
+        // Render QR to canvas with selected style
         return this.renderToCanvas(qr, {
             size,
             style,
@@ -58,10 +58,10 @@ class QRGenerator {
     }
 
     /**
-     * Calculate optimal type number for QR code
+     * Calculate optimal type number for QR
      * @param {string} text - Text to encode
      * @param {string} errorCorrection - Error correction level
-     * @returns {number} - QR code type number
+     * @returns {number} - QR type number
      */
     calculateTypeNumber(text, errorCorrection) {
         // Start with type 1 and increase until text fits
@@ -81,10 +81,10 @@ class QRGenerator {
     }
 
     /**
-     * Render QR code to canvas
-     * @param {Object} qr - QR code object from qrcode-generator
+     * Render QR to canvas
+     * @param {Object} qr - QR object from qrcode-generator
      * @param {Object} options - Rendering options
-     * @returns {HTMLCanvasElement} - Canvas with rendered QR code
+     * @returns {HTMLCanvasElement} - Canvas with rendered QR
      */
     renderToCanvas(qr, options) {
         const { size, style, foregroundColor, backgroundColor, transparentBackground, margin } = options;
@@ -126,8 +126,8 @@ class QRGenerator {
     }
 
     /**
-     * Render QR code with square pattern (default)
-     * @param {Object} qr - QR code object
+     * Render QR with square pattern (default)
+     * @param {Object} qr - QR object
      * @param {number} cellSize - Size of each module
      * @param {number} margin - Quiet zone margin
      */
@@ -146,8 +146,8 @@ class QRGenerator {
     }
 
     /**
-     * Render QR code with dot pattern
-     * @param {Object} qr - QR code object
+     * Render QR with dot pattern
+     * @param {Object} qr - QR object
      * @param {number} cellSize - Size of each module
      * @param {number} margin - Quiet zone margin
      */
@@ -170,8 +170,8 @@ class QRGenerator {
     }
 
     /**
-     * Render QR code with rounded pattern
-     * @param {Object} qr - QR code object
+     * Render QR with rounded pattern
+     * @param {Object} qr - QR object
      * @param {number} cellSize - Size of each module
      * @param {number} margin - Quiet zone margin
      */

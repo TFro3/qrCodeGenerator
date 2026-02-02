@@ -33,10 +33,37 @@ class QRCodeApp {
         // Bind event handlers
         this.uiController.bindEvents(this);
 
+        // Setup info banner toggle
+        this.setupInfoToggle();
+
         // Load preset icons
         await this.loadPresetIcons();
 
         console.log('QR Code Generator ready!');
+    }
+
+    /**
+     * Setup info banner collapse/expand functionality
+     */
+    setupInfoToggle() {
+        const toggleBtn = document.getElementById('info-toggle');
+        const infoFeatures = document.getElementById('info-features');
+
+        if (!toggleBtn || !infoFeatures) return;
+
+        toggleBtn.addEventListener('click', () => {
+            const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+
+            if (isExpanded) {
+                // Collapse
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                infoFeatures.classList.add('collapsed');
+            } else {
+                // Expand
+                toggleBtn.setAttribute('aria-expanded', 'true');
+                infoFeatures.classList.remove('collapsed');
+            }
+        });
     }
 
     /**
@@ -62,7 +89,7 @@ class QRCodeApp {
     }
 
     /**
-     * Generate QR code based on current UI configuration
+     * Generate QR based on current UI configuration
      */
     async generateQR() {
         try {
@@ -83,13 +110,13 @@ class QRCodeApp {
             if (this.state.isAnimatedGIF && this.state.currentLogo) {
                 await this.generateAnimatedQR(config);
             } else {
-                // Standard static QR code generation
+                // Standard static QR generation
                 await this.generateStaticQR(config);
             }
 
         } catch (error) {
-            console.error('Error generating QR code:', error);
-            this.uiController.showError('Failed to generate QR code. Please try again.');
+            console.error('Error generating QR Code:', error);
+            this.uiController.showError('Failed to generate QR Code. Please try again.');
         } finally {
             // Hide loading indicator
             this.uiController.hideLoading();
@@ -97,10 +124,10 @@ class QRCodeApp {
     }
 
     /**
-     * Generate static (non-animated) QR code
+     * Generate static (non-animated) QR
      */
     async generateStaticQR(config) {
-        // Generate base QR code
+        // Generate base QR
         const qrCanvas = this.qrGenerator.generate(config);
 
         let finalCanvas = qrCanvas;
@@ -124,18 +151,18 @@ class QRCodeApp {
                 );
             } catch (error) {
                 console.error('Failed to add logo overlay:', error);
-                this.uiController.showError('Failed to add logo. Using QR code without logo.');
+                this.uiController.showError('Failed to add logo. Using QR Code without logo.');
                 finalCanvas = qrCanvas;
             }
         }
 
-        // Display QR code
+        // Display QR
         this.uiController.displayQR(finalCanvas);
         this.state.animatedGIFBlob = null;
     }
 
     /**
-     * Generate animated QR code with GIF logo
+     * Generate animated QR with GIF logo
      */
     async generateAnimatedQR(config) {
         try {
@@ -156,11 +183,11 @@ class QRCodeApp {
             // Use white background for logo area
             const logoBackgroundColor = '#FFFFFF';
 
-            // Generate QR code for each frame
+            // Generate QR for each frame
             for (let i = 0; i < frames.length; i++) {
                 this.uiController.showLoadingMessage(`Processing frame ${i + 1}/${frames.length}...`);
 
-                // Generate base QR code (same for all frames)
+                // Generate base QR (same for all frames)
                 const qrCanvas = this.qrGenerator.generate(config);
 
                 // Convert frame ImageData to canvas
@@ -203,12 +230,12 @@ class QRCodeApp {
             // Display animated GIF
             this.uiController.displayAnimatedGIF(gifDataURL);
 
-            console.log('Animated QR code generated successfully');
+            console.log('Animated QR Code generated successfully');
 
         } catch (error) {
-            console.error('Failed to generate animated QR code:', error);
+            console.error('Failed to generate animated QR Code:', error);
             console.error('Error details:', error.message, error.stack);
-            this.uiController.showError(`Failed to process animated GIF: ${error.message}. Using static QR code.`);
+            this.uiController.showError(`Failed to process animated GIF: ${error.message}. Using static QR Code.`);
             // Fallback to static QR
             await this.generateStaticQR(config);
         }
@@ -257,7 +284,7 @@ class QRCodeApp {
                 this.uiController.toggleIconPicker();
             }
 
-            // Regenerate QR code if one exists
+            // Regenerate QR if one exists
             if (this.uiController.state.currentCanvas) {
                 await this.generateQR();
             }
@@ -283,7 +310,7 @@ class QRCodeApp {
             // Close icon picker
             this.uiController.toggleIconPicker();
 
-            // Regenerate QR code if one exists
+            // Regenerate QR if one exists
             if (this.uiController.state.currentCanvas) {
                 await this.generateQR();
             }
@@ -314,20 +341,20 @@ class QRCodeApp {
             item.classList.remove('selected');
         });
 
-        // Regenerate QR code without logo
+        // Regenerate QR without logo
         if (this.uiController.state.currentCanvas) {
             await this.generateQR();
         }
     }
 
     /**
-     * Download current QR code
+     * Download current QR
      */
     downloadQR() {
         const canvas = this.uiController.state.currentCanvas;
 
         if (!canvas && !this.state.animatedGIFBlob) {
-            this.uiController.showError('No QR code to download. Generate one first.');
+            this.uiController.showError('No QR Code to download. Generate one first.');
             return;
         }
 
@@ -338,16 +365,16 @@ class QRCodeApp {
             // Download animated GIF if available
             if (this.state.animatedGIFBlob) {
                 this.downloadHandler.downloadGIF(this.state.animatedGIFBlob, filename);
-                this.uiController.showSuccess('Animated QR code downloaded successfully!');
+                this.uiController.showSuccess('Animated QR Code downloaded successfully!');
             } else {
                 // Download static PNG
                 this.downloadHandler.downloadPNG(canvas, filename);
-                this.uiController.showSuccess('QR code downloaded successfully!');
+                this.uiController.showSuccess('QR Code downloaded successfully!');
             }
 
         } catch (error) {
-            console.error('Error downloading QR code:', error);
-            this.uiController.showError('Failed to download QR code. Please try again.');
+            console.error('Error downloading QR Code:', error);
+            this.uiController.showError('Failed to download QR Code. Please try again.');
         }
     }
 

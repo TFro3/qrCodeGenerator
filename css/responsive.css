@@ -48,6 +48,24 @@
         font-size: 0.875rem;
     }
 
+    .info-banner {
+        padding: var(--spacing-sm) 0;
+    }
+
+    .info-toggle {
+        padding: var(--spacing-sm);
+    }
+
+    .info-toggle-text {
+        font-size: 1.1rem;
+    }
+
+    .info-features {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) 0;
+    }
+
     .main {
         padding-top: var(--spacing-lg);
         padding-bottom: var(--spacing-lg);
@@ -161,6 +179,7 @@
 /* Print Styles */
 @media print {
     .header,
+    .info-banner,
     .footer,
     .controls-panel {
         display: none;

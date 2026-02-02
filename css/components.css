@@ -2,6 +2,97 @@
    Component-Specific Styles
    ========================================== */
 
+/* Info Banner */
+.info-banner {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%);
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-md) 0;
+}
+
+.info-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.info-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-sans);
+}
+
+.info-toggle:hover {
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-md);
+}
+
+.info-toggle-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.info-toggle-icon {
+    flex-shrink: 0;
+    color: var(--primary);
+    transition: transform var(--transition-base);
+}
+
+.info-toggle[aria-expanded="false"] .info-toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.info-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg) 0;
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
+    opacity: 1;
+}
+
+.info-features.collapsed {
+    max-height: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.info-feature {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+}
+
+.info-feature svg {
+    flex-shrink: 0;
+    color: var(--primary);
+    margin-top: 2px;
+}
+
+.info-feature strong {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.info-feature p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
 /* Style Buttons */
 .style-options {
     display: grid;
@@ -270,7 +361,8 @@
 .primary-btn:focus-visible,
 .download-btn:focus-visible,
 .icon-item:focus-visible,
-.checkbox-input:focus-visible {
+.checkbox-input:focus-visible,
+.info-toggle:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
 }

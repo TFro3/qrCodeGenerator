@@ -1,6 +1,6 @@
 /**
  * Image Processor Module
- * Handles logo overlay on QR codes using Canvas API
+ * Handles logo overlay on QRs using Canvas API
  */
 
 class ImageProcessor {
@@ -10,8 +10,8 @@ class ImageProcessor {
     }
 
     /**
-     * Add logo overlay to QR code canvas
-     * @param {HTMLCanvasElement} qrCanvas - Original QR code canvas
+     * Add logo overlay to QR canvas
+     * @param {HTMLCanvasElement} qrCanvas - Original QR canvas
      * @param {string} logoSrc - Logo image source (URL or data URL)
      * @param {Object} options - Overlay options
      * @param {number} options.logoSizePercent - Logo size as percentage of QR (0.2-0.3)
@@ -22,7 +22,7 @@ class ImageProcessor {
      */
     async addLogoOverlay(qrCanvas, logoSrc, options = {}) {
         const {
-            logoSizePercent = 0.25, // 25% of QR code size
+            logoSizePercent = 0.25, // 25% of QR size
             padding = 10,
             backgroundColor = '#FFFFFF',
             patternStyle = 'squares'
@@ -38,7 +38,7 @@ class ImageProcessor {
         outputCanvas.height = qrCanvas.height;
         const outputCtx = outputCanvas.getContext('2d');
 
-        // Draw original QR code
+        // Draw original QR
         outputCtx.drawImage(qrCanvas, 0, 0);
 
         // Load logo image
@@ -244,7 +244,7 @@ class ImageProcessor {
             if (file.type === 'image/gif') {
                 maxSizeBytes = 100 * 1024 * 1024; // 100MB for GIFs (animations can be large)
             } else {
-                maxSizeBytes = 5 * 1024 * 1024; // 5MB for other images
+                maxSizeBytes = 25 * 1024 * 1024; // 25MB for other images
             }
         }
 

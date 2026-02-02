@@ -1,6 +1,6 @@
 /**
  * Download Handler Module
- * Handles downloading QR codes in various formats
+ * Handles downloading QRs in various formats
  */
 
 class DownloadHandler {
@@ -114,7 +114,7 @@ class DownloadHandler {
 
     /**
      * Generate a filename based on current timestamp and text
-     * @param {string} text - Text encoded in QR code
+     * @param {string} text - Text encoded in QR
      * @returns {string} - Generated filename
      */
     generateFilename(text = '') {

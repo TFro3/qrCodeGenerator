@@ -1,15 +1,15 @@
-# QR Code Generator
+# QR Generator
 
-A free, self-hosted QR code generator that creates QR codes that **never expire**. Built with pure HTML, CSS, and JavaScript - no backend required!
+A free, self-hosted QR generator that creates QRs that **never expire**. Built with pure HTML, CSS, and JavaScript - no backend required!
 
 ## Features
 
-- **Completely Free & Self-Hosted** - Your QR codes, your control
-- **No Expiration** - QR codes work forever (as long as the linked URL is active)
+- **Completely Free & Self-Hosted** - Your QRs, your control
+- **No Expiration** - QRs work forever (as long as the linked URL is active)
 - **Multiple Pattern Styles** - Choose between squares or rounded patterns
 - **Custom Logos** - Add your own logo or choose from 18 preset icons
-- **Animated GIF Support** - Upload animated GIFs to create eye-catching animated QR codes
-- **Flexible Sizing** - Generate QR codes from 256px to 2048px
+- **Animated GIF Support** - Upload animated GIFs to create eye-catching animated QRs
+- **Flexible Sizing** - Generate QRs from 256px to 2048px
 - **Error Correction Levels** - Choose from Low, Medium, Quartile, or High
 - **Custom Colors** - Customize foreground and background colors, or use transparent backgrounds
 - **Responsive Design** - Works perfectly on desktop, tablet, and mobile
@@ -27,7 +27,7 @@ Simply open [index.html](index.html) in any modern web browser. That's it!
 ### Option 2: Run with Python HTTP Server (Recommended)
 
 ```bash
-cd "QR Code Generator"
+cd "QR Generator"
 python3 -m http.server 8000
 ```
 
@@ -98,8 +98,8 @@ sudo systemctl restart lighttpd
 
 ## Keyboard Shortcuts
 
-- **Enter** - Generate QR code
-- **Cmd/Ctrl + S** - Download QR code
+- **Enter** - Generate QR Code
+- **Cmd/Ctrl + S** - Download QR Code
 - **Escape** - Close icon picker
 
 ## Error Correction Levels
@@ -112,7 +112,7 @@ sudo systemctl restart lighttpd
 ## Pattern Styles
 
 ### Squares
-Traditional QR code appearance with square modules. Fastest rendering, maximum compatibility.
+Traditional QR appearance with square modules. Fastest rendering, maximum compatibility.
 
 ### Rounded
 Smooth rounded rectangles for a contemporary look. Good balance of style and function.
@@ -122,22 +122,22 @@ Smooth rounded rectangles for a contemporary look. Good balance of style and fun
 For best scanning results when using logos:
 
 - **Use High error correction level** (30% damage tolerance)
-- **Keep logo size small** - Logo covers ~25% of QR code
+- **Keep logo size small** - Logo covers ~25% of QR
 - **Use high contrast** - Logo should stand out clearly
 - **Test scanning** - Always test with your phone before printing
 
 ## Animated GIF Support
 
-Create eye-catching animated QR codes for digital displays:
+Create eye-catching animated QRs for digital displays:
 
-- **Upload animated GIFs** - Upload any GIF file as your logo to create an animated QR code
-- **Frame-by-frame processing** - Each frame of your GIF is applied to the QR code
+- **Upload animated GIFs** - Upload any GIF file as your logo to create an animated QR
+- **Frame-by-frame processing** - Each frame of your GIF is applied to the QR
 - **Automatic encoding** - The app processes all frames and combines them back into an animated GIF
 - **Perfect for digital use** - Ideal for websites, digital displays, presentations, and social media
-- **Same scannability** - Animated QR codes scan just as well as static ones
+- **Same scannability** - Animated QRs scan just as well as static ones
 - **Progress indicators** - Real-time feedback during processing
 
-**Best practices for animated QR codes:**
+**Best practices for animated QRs:**
 - GIF files up to 100MB are supported
 - Use smaller GIFs (fewer frames and smaller dimensions) for faster processing
 - Keep animations simple - complex GIFs may take longer to process
@@ -149,7 +149,7 @@ Create eye-catching animated QR codes for digital displays:
 
 Enable transparent backgrounds for maximum flexibility:
 
-- **When to use**: Perfect for overlaying QR codes on images, colored backgrounds, or designs
+- **When to use**: Perfect for overlaying QRs on images, colored backgrounds, or designs
 - **Export format**: Download as PNG with alpha channel transparency
 - **Logo support**: Works seamlessly with logos - logo area maintains white background for scannability
 - **Use cases**: Stickers, labels, business cards, marketing materials, web designs
@@ -231,11 +231,11 @@ Shop, Cart, Card, Location, Calendar, Payment
 
 ## Tips & Best Practices
 
-1. **Test Before Printing** - Always scan your QR code before mass printing
+1. **Test Before Printing** - Always scan your QR before mass printing
 2. **Use High Error Correction** - Especially for outdoor/printed codes
 3. **Avoid Small Sizes for Logos** - 512px minimum when using logos
 4. **High Contrast Colors** - Dark code on light background works best
-5. **Leave Quiet Zone** - White border around QR code improves scanning
+5. **Leave Quiet Zone** - White border around QR improves scanning
 6. **Test Different Scanners** - iOS Camera, Android, dedicated apps
 
 ## Troubleshooting
@@ -244,14 +244,14 @@ Shop, Cart, Card, Location, Calendar, Payment
 
 - Increase error correction level to High (H)
 - Make logo smaller or remove it
-- Increase QR code size
+- Increase QR size
 - Ensure high contrast (black on white)
 - Check that URL is correct
 
 ### Logo Not Appearing
 
 - Check file format (PNG, JPG, SVG, GIF supported)
-- File size must be under 5MB for images, 100MB for GIFs
+- File size must be under 25MB for images, 100MB for GIFs
 - Try a different image
 - Ensure error correction is set to High (H)
 
@@ -286,9 +286,9 @@ npx http-server
 
 Potential features for future versions:
 
-- vCard QR codes (contact information)
-- WiFi QR codes (network credentials)
-- Batch QR code generation
+- vCard QRs (contact information)
+- WiFi QRs (network credentials)
+- Batch QR generation
 - SVG export option
 - History/favorites
 - Dark mode
@@ -318,6 +318,10 @@ For issues or questions, please check:
 
 ---
 
-**Made with ❤️ for creating QR codes that last forever**
+**Made with ❤️ for creating QRs that last forever**
 
-No subscriptions. No expiration. No tracking. Just free, reliable QR codes.
+No subscriptions. No expiration. No tracking. Just free, reliable QRs.
+
+## Trademark Notice
+
+The word/phrase "QR Code" is registered trademark of DENSO WAVE INCORPORATED

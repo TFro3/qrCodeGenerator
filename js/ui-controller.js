@@ -185,8 +185,8 @@ class UIController {
     }
 
     /**
-     * Display QR code on canvas
-     * @param {HTMLCanvasElement} canvas - Canvas with QR code
+     * Display QR Code on canvas
+     * @param {HTMLCanvasElement} canvas - Canvas with QR Code
      */
     displayQR(canvas) {
         if (!canvas) return;
@@ -215,7 +215,7 @@ class UIController {
     }
 
     /**
-     * Display animated GIF QR code
+     * Display animated GIF QR Code
      * @param {string} gifDataURL - GIF data URL
      */
     displayAnimatedGIF(gifDataURL) {
@@ -415,14 +415,14 @@ class UIController {
         if (!text) {
             return {
                 valid: false,
-                error: 'Please enter a URL or text to generate a QR code'
+                error: 'Please enter a URL or text to generate a QR Code'
             };
         }
 
         if (text.length > 2953) {
             return {
                 valid: false,
-                error: 'Text is too long. Maximum 2953 characters for QR codes.'
+                error: 'Text is too long. Maximum 2953 characters for QR Codes.'
             };
         }
 
